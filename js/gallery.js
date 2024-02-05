@@ -65,33 +65,29 @@ const images = [
 ];
 
 const galleryContainer = document.querySelector(".gallery");
-const galleryNew = [];
 
 function createGallery() {
-    images.forEach(({ preview, original, description }) => {
-        galleryNew.push(`
-            <li class="gallery-item">
-                <a class="gallery-link" href="${original}">
-                    <img
-                        class="gallery-image"
-                        src="${preview}"
-                        data-source="${original}"
-                        alt="${description}"
-                    />
-                </a>
-            </li>`);
-    });
+  const galleryNew = images.map(({ preview, original, description }) => `
+    <li class="gallery-item">
+      <a class="gallery-link" href="${original}">
+        <img
+          class="gallery-image"
+          src="${preview}"
+          data-source="${original}"
+          alt="${description}"
+        />
+      </a>
+    </li>`).join("");
 
-    galleryContainer.innerHTML += galleryNew.join("");
+  galleryContainer.insertAdjacentHTML("beforeend", galleryNew);
 }
-
 function openModal(event) {
     event.preventDefault();
 
     if (event.target.nodeName !== "IMG") {
         return;
-    }
-
+  }
+  
     const imgGross = event.target.dataset.source;
     const modal = basicLightbox.create(`<img src="${imgGross}" alt="Grosse Image">`);
     modal.show();
