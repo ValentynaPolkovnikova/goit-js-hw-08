@@ -64,43 +64,36 @@ const images = [
   },
 ];
 
-const galleryContainer = document.querySelector(".gallery");
+const gallery = document.querySelector(".gallery");
+const newGallery = [];
 
-function createGallery() {
-  const galleryNew = images.map(({ preview, original, description }) => `
-    <li class="gallery-item">
-      <a class="gallery-link" href="${original}">
-        <img
-          class="gallery-image"
-          src="${preview}"
-          data-source="${original}"
-          alt="${description}"
-        />
-      </a>
-    </li>`).join("");
+function addElementsToGallery() {
+    images.forEach(({ preview, original, description }) => {
+        newGallery.push(`
+            <li class="gallery-item">
+                <a class="gallery-link" href="${original}">
+                    <img
+                        class="gallery-image"
+                        src="${preview}"
+                        data-source="${original}"
+                        alt="${description}"
+                    />
+                </a>
+            </li>`);
+    });
 
-  galleryContainer.insertAdjacentHTML("beforeend", galleryNew);
+    gallery.innerHTML += newGallery.join("");
 }
-function openModal(event) {
+
+gallery.addEventListener("click", openImageInModalWindow);
+
+function openImageInModalWindow(event) {
     event.preventDefault();
 
-    if (event.target.nodeName !== "IMG") {
-        return;
-  }
-  
-    const imgGross = event.target.dataset.source;
-    const modal = basicLightbox.create(`<img src="${imgGross}" alt="Grosse Image">`);
-    modal.show();
-}
-
-function closeModal(event) {
-    if (event.code === "Escape") {
-        basicLightbox.close();
-        document.removeEventListener("keydown", closeModal);
+    if (event.target.tagName === "IMG") {
+        const originalImg = event.target.dataset.source;
+        basicLightbox.create(`<img src="${originalImg}">`).show();
     }
 }
 
-galleryContainer.addEventListener("click", openModal);
-document.addEventListener("keydown", closeModal);
-
-createGallery();
+addElementsToGallery();
